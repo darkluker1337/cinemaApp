@@ -6,26 +6,25 @@ export class Component extends HTMLElement {
     this.isShadow = false
   }
 
-
-
   setState(callback) {
     this.state = callback(this.state);
-    if(this.isShadow){
+    if(this.isShadow) {
       this.shadowRoot.innerHTML = this.render()
-    }else{
+    } else {
       this.innerHTML = this.render()
     }
   }
 
   connectedCallback() {
-  if(this.isShadow){
-    this.attachShadow({mode:'open'});
-    this.shadowRoot.innerHTML = this.render()
-  }else{
-    this.innerHTML = this.render()
-  }
+    if(this.isShadow) {
+      this.attachShadow({ mode: 'open' });
+      const tml = document.createElement("template");
+      tml.innerHTML = this.render()
+      this.shadowRoot.append(tml.content.cloneNode(true))
+    } else {
+      this.innerHTML = this.render()
+    }
     this.componentDidMount();
-
   }
 
   disconnectedCallback() {
@@ -42,6 +41,7 @@ export class Component extends HTMLElement {
   dispatch(type, props) {
     this.dispatchEvent(new CustomEvent(type, { bubbles: true, detail: props }));
   }
+
   componentDidMount() {}
   componentWillUnmount() {}
   componentWillUpdate() {}
