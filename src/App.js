@@ -1,16 +1,97 @@
 import * as core from "./core";
 import './components'
 import { appRoutes } from "./constants/appRoutes";
+import { authServiece } from "./services/Auth";
 
 export class App extends core.Component {
+  
+  constructor(){
+    super()
+    this.state ={
+      isloading:false,
+      isLogged:false,
+      error:'',
+    };
+}
+  
+  
+  toggleIsLoading(){
+    this.setState((state)=>{
+      return{
+        ...state,
+        isloading: !state.isloading,
+      }
+    })
+  }
+
+  getUser(){
+    this.toggleIsLoading()
+    authServiece.init()
+      .then((user)=>{
+        authServiece.user = user
+        this.setState((state)=>{
+          return{
+            ...state,
+            isLogged: Boolean(user)
+          }
+        })
+  })
+      .catch((error)=>{
+       this.setState((state)=>{
+        return{
+          ...state,
+          error: error
+        }
+       })
+      })
+      .finally(()=>{
+        this.toggleIsLoading()
+      })
+  }
+  
+  onSignOut = () =>{
+    this.toggleIsLoading();
+    authServiece
+      .signOut()
+      .then(()=>{
+        this.setState((state)=>{
+          return{
+            ...state,
+            isLogged: false
+          }
+        })
+      })
+      .catch((error)=>{
+        this.setState((state)=>{
+          return{
+            ...state,
+            error: error.message
+        }
+        })
+      })
+      .finally(()=>{
+        this.toggleIsLoading();
+      })
+  }
+  
+  componentDidMount(){
+    this.getUser()
+    this.addEventListener('sign-out',this.onSignOut)
+  }
+  componentWillUnmount(){
+    this.removeEventListener('sign-out',this.onSignOut)
+  }
+  
 
 
   render() {
-    return (
-      `
+    return this.state.isloading 
+    ? `<it-preloader is-loading='${this.state.isloading}'></it-preloader>`
+    : `
       <div id="shell">
         <it-router>
-          <it-header></it-header>
+        
+          <it-header is-logged='${this.state.isLogged}'></it-header>
               <main id="main">
                 <it-route path="${appRoutes.home}" component="home-page" title="Home Page"></it-route>
                 <it-route path="${appRoutes.admin}" component="admin-page" title="Admin Page"></it-route>
@@ -21,10 +102,11 @@ export class App extends core.Component {
                 <it-outlet></it-outlet>
               </main>
             <it-footer></it-footer>
-          </it-router>
+          </it-preloader>
+        </it-router>
       </div>
       `
-    )
+    
   }
 }
 
