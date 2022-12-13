@@ -4,9 +4,8 @@ import "../../atoms";
 import { initialFieldsState } from "./initialState";
 import { FormManager } from "../../../core/FormManager/FormManager";
 import { Validator } from "../../../core/FormManager/Validator";
-import { authServiece } from "../../../services/Auth";
-import { appRoutes } from '../../../constants/appRoutes'
-
+import { authService } from "../../../services/Auth";
+import { appRoutes } from "../../../constants/appRoutes";
 
 export class SignUpPage extends Component {
   constructor() {
@@ -22,43 +21,44 @@ export class SignUpPage extends Component {
     this.form = new FormManager();
   }
 
-  toggleisLoading = ()=>{
-    this.setState((state)=>{
-      return{
+  toggleisLoading = () => {
+    this.setState((state) => {
+      return {
         ...state,
-        isLoading: !state.isLoading
-      }
-    })
-  }
+        isLoading: !state.isLoading,
+      };
+    });
+  };
 
   registerUser = (data) => {
-    this.toggleisLoading()
-    authServiece.signUp(data.email, data.password)
-     .then((user)=>{
-      authServiece.user = user;
-      this.dispatch('change-route', {target: appRoutes.home})
-     })
-     .catch((error)=>{
-      this.setState((state)=>{
-        return{
-          ...state,
-          error: error.message
-        }
+    this.toggleisLoading();
+    authService
+      .signUp(data.email, data.password)
+      .then((user) => {
+        authService.user = user;
+        this.dispatch("change-route", { target: appRoutes.home });
       })
-     })
-     .finally(()=>{
-      this.toggleisLoading()
-     })
+      .catch((error) => {
+        this.setState((state) => {
+          return {
+            ...state,
+            error: error.message,
+          };
+        });
+      })
+      .finally(() => {
+        this.toggleisLoading();
+      });
   };
 
   validateForm = (evt) => {
     if (evt.target.closest("it-input")) {
       this.form.init(this.querySelector(".registration-form"), {
         email: [
-          Validator.email('Email is not valid'),
-          Validator.required('The field should not be empty')
+          Validator.email("Email is not valid"),
+          Validator.required("The field should not be empty"),
         ],
-        password: [Validator.required('The field should not be empty')],
+        password: [Validator.required("The field should not be empty")],
       });
     }
   };
@@ -77,7 +77,7 @@ export class SignUpPage extends Component {
 
   componentDidMount() {
     this.addEventListener("click", this.validateForm);
-    this.addEventListener('validate-controls', this.validate);
+    this.addEventListener("validate-controls", this.validate);
     this.addEventListener("submit", this.form.handleSubmit(this.registerUser));
   }
 
@@ -89,7 +89,7 @@ export class SignUpPage extends Component {
     return `
       <it-preloader is-loading="${this.state.isLoading}">
         <form class="mt-5 registration-form">
-        <div class="invalid-feedback">${this.props['error-message']}</div>
+          <div class="invalid-feedback text-center mb-3 d-block">${this.state.error}</div>
           <it-input
             type="email"
             label="Email"

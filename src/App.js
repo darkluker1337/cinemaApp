@@ -1,120 +1,126 @@
 import * as core from "./core";
-import './components'
+import "./components";
 import { appRoutes } from "./constants/appRoutes";
-import { authServiece } from "./services/Auth";
+import { authService } from "./services/Auth";
 
 export class App extends core.Component {
-  
-  constructor(){
-    super()
-    this.state ={
-      isloading:false,
-      isLogged:false,
-      error:'',
+  constructor() {
+    super();
+    this.state = {
+      isLoading: false,
+      isLogged: false,
+      error: "",
     };
-}
-  
-  
-  toggleIsLoading(){
-    this.setState((state)=>{
-      return{
+  }
+
+  toggleIsLoading() {
+    this.setState((state) => {
+      return {
         ...state,
-        isloading: !state.isloading,
-      }
-    })
+        isLoading: !state.isLoading,
+      };
+    });
   }
 
-  getUser(){
-    this.toggleIsLoading()
-    authServiece.init()
-      .then((user)=>{
-        authServiece.user = user
-        this.setState((state)=>{
-          return{
-            ...state,
-            isLogged: Boolean(user)
-          }
-        })
-  })
-      .catch((error)=>{
-       this.setState((state)=>{
-        return{
-          ...state,
-          error: error
-        }
-       })
-      })
-      .finally(()=>{
-        this.toggleIsLoading()
-      })
-  }
-  
-  onSignOut = () =>{
+  getUser() {
     this.toggleIsLoading();
-    authServiece
-      .signOut()
-      .then(()=>{
-        this.setState((state)=>{
-          return{
+    authService
+      .init()
+      .then((user) => {
+        authService.user = user;
+        this.setState((state) => {
+          return {
             ...state,
-            isLogged: false
-          }
-        })
+            isLogged: Boolean(user),
+          };
+        });
       })
-      .catch((error)=>{
-        this.setState((state)=>{
-          return{
+      .catch((error) => {
+        this.setState((state) => {
+          return {
             ...state,
-            error: error.message
-        }
-        })
+            error: error.message,
+          };
+        });
       })
-      .finally(()=>{
+      .finally(() => {
         this.toggleIsLoading();
-      })
+      });
   }
-  
-  componentDidMount(){
-    this.getUser()
-    this.addEventListener('sign-out',this.onSignOut)
-  }
-  componentWillUnmount(){
-    this.removeEventListener('sign-out',this.onSignOut)
-  }
-  
 
+  onSignOut = () => {
+    this.toggleIsLoading();
+    authService
+      .signOut()
+      .then(() => {
+        this.setState((state) => {
+          return {
+            ...state,
+            isLogged: false,
+          };
+        });
+      })
+      .catch((error) => {
+        this.setState((state) => {
+          return {
+            ...state,
+            error: error.message,
+          };
+        });
+      })
+      .finally(() => {
+        this.toggleIsLoading();
+      });
+  };
+
+  setIsLoagged = () => {
+    console.log('user-is-logouted');
+    this.setState((state) => {
+      return {
+        ...state,
+        isLogged: true,
+      };
+    });
+  };
+
+  componentDidMount() {
+    this.getUser();
+    this.addEventListener("user-is-logged", this.setIsLoagged);
+    this.addEventListener("user-is-logouted", this.onSignOut);
+  }
+
+  componentWillUnmount() {
+    this.removeEventListener("user-is-logged", this.setIsLoagged);
+    this.removeEventListener("user-is-logouted", this.onSignOut);
+  }
 
   render() {
-    return this.state.isloading 
-    ? `<it-preloader is-loading='${this.state.isloading}'></it-preloader>`
-    : `
+    return this.state.isLoading
+      ? `<it-preloader is-loading="${this.state.isLoading}"></it-preloader>`
+      : `
       <div id="shell">
         <it-router>
-        
-          <it-header is-logged='${this.state.isLogged}'></it-header>
+            <it-header is-logged="${this.state.isLogged}"></it-header>
               <main id="main">
                 <it-route path="${appRoutes.home}" component="home-page" title="Home Page"></it-route>
                 <it-route path="${appRoutes.admin}" component="admin-page" title="Admin Page"></it-route>
                 <it-route path="${appRoutes.signIn}" component="sign-in-page" title="SignIn Page"></it-route>
                 <it-route path="${appRoutes.signUp}" component="sign-up-page" title="SignUp Page"></it-route>
-                <it-route path="${appRoutes.movieDetails}/:id" component="movie-details-page" title="Movie Details Page"></it-route>
+                <it-route path="${appRoutes.movies}/:id" component="movie-details-page" title="Movie Details Page"></it-route>
                 <it-route path="${appRoutes.errorPage}" component="error-page" title="Not Found Page"></it-route>
                 <it-outlet></it-outlet>
               </main>
             <it-footer></it-footer>
-          </it-preloader>
         </it-router>
       </div>
-      `
-    
+      `;
   }
 }
 
 customElements.define("my-app", App);
 
-
-
-{/* <it-header></it-header>
+{
+  /* <it-header></it-header>
 ${this.state.movies.map(({ id, title, poster, rating, comments }) => {
   return `
     <movie-card 
@@ -125,4 +131,5 @@ ${this.state.movies.map(({ id, title, poster, rating, comments }) => {
       comments='${JSON.stringify(comments)}'
     ></movie-card>
   `
-}).join(' ')} */}
+}).join(' ')} */
+}
