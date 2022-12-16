@@ -130,34 +130,7 @@ h4 {
 .box .last {
 	padding:0;
 }
-.rating {
-	float:left;
-	width:152px;
-	padding-top:8px;
-}
-.rating p {
-	float:left;
-	font-size:10px;
-	color:#fff;
-	font-weight:bold;
-}
-.rating .stars {
-	float:left;
-	width:60px;
-	height:11px;
-	background:url('./assets/images/stars.gif') no-repeat 0 0;
-	margin-left:2px;
-}
-.rating .stars-in {
-	width:48px;
-	display:inline;
-	background:url('./assets/images/stars.gif') no-repeat 0 bottom;
-	position:absolute;
-	height:11px;
-	font-size:0;
-	line-height:0;
-	text-indent:-4000px;
-}
+
 .comments {
 	background:url('./assets/images/comments.gif') no-repeat 0 center;
 	padding-left:12px;

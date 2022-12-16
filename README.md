@@ -1,1 +1,1 @@
-# cinemaApp
+# mentoring-simple-webpack-starter
