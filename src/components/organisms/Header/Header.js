@@ -57,7 +57,7 @@ export class Header extends core.Component {
                 <ul>
                     <li>
                         <it-link to="${appRoutes.home}">
-                            <span class="link ${this.isActiveLink(appRoutes.home)}">Home</span>
+                            <span class="link ${this.isActiveLink(appRoutes.home)}">Главная</span>
                         </it-link>
                     </li>
                     ${
@@ -65,24 +65,24 @@ export class Header extends core.Component {
                         ? `
                             <li>
                                 <it-link to="${appRoutes.admin}">
-                                    <span class="link ${this.isActiveLink(appRoutes.admin)}">Admin</span>
+                                    <span class="link ${this.isActiveLink(appRoutes.admin)}">Админ</span>
                                 </it-link>
                             </li>
                             <li>
                                 <a href="#" class="sign-out-link">
-                                    <span class="link">sign Out</span>
+                                    <span class="link">Выход</span>
                                 </a>
                             </li>
                     `
                         : `
                         <li>
                             <it-link to="${appRoutes.signIn}">
-                                <span class="link ${this.isActiveLink(appRoutes.signIn)}">sign In</span>
+                                <span class="link ${this.isActiveLink(appRoutes.signIn)}">Вход</span>
                             </it-link>
                         </li>
                         <li>
                             <it-link to="${appRoutes.signUp}">
-                                <span class="link ${this.isActiveLink(appRoutes.signUp)}">sign Up</span>
+                                <span class="link ${this.isActiveLink(appRoutes.signUp)}">Выход</span>
                             </it-link>
                         </li>
                         `
